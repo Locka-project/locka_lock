@@ -45,7 +45,7 @@ function connectSocket(id,email,api) {
 			}
 		});
 		io.socket.on("device", function(data){
-			console.log(data);	
+			console.log('--> ID : ' + data.data.name + ' state : ' + data.data.state);	
 		});
 	});
 	io.socket.on('disconnect', function(){

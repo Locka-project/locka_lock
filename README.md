@@ -1,6 +1,6 @@
 # Virtual Lock
 
-## Install
+## Install all dependencies
 `npm install`
 
 ## Start app
@@ -8,3 +8,8 @@
 
 ## Event
 Virtual lock listening on 'closeDoor' and 'openDoor' socket
+
+## Requirements
+* Identifier
+* Email (for authentication)
+* API Key (for authentication / look your dashboard to found api key)
