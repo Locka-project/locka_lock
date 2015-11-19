@@ -1,14 +1,14 @@
 var socketIOClient = require('socket.io-client');
 var sailsIOClient = require('sails.io.js');
 var readline = require('readline');
-var five = require("johnny-five");
-var board = new five.Board();
-
-
-board.on("ready", function() {
-  var led = new five.Led(13);
-  led.blink(100);
-});
+// var five = require("johnny-five");
+// var board = new five.Board();
+//
+//
+// board.on("ready", function() {
+//   var led = new five.Led(13);
+//   led.blink(100);
+// });
 
 
 /* Functions */
