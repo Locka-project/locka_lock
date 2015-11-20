@@ -2,26 +2,15 @@ var socketIOClient = require('socket.io-client');
 var sailsIOClient = require('sails.io.js');
 var readline = require('readline');
 var five = require("johnny-five");
-var board = new five.Board();
+var board = new five.Board({port: "/dev/ttyATH0"});
 
 board.on("connect", function() {
   console.log('Board on connect');
 });
 board.on("ready", function() {
   console.log('Board Ready');
-  //  this.pinMode(13, five.Pin.OUTPUT);
-  var led = new five.Led(13);
-  led.blink(100);
 });
 board.on("info", function(event) {
-  /*
-    Event {
-      type: "info"|"warn"|"fail",
-      timestamp: Time of event in milliseconds,
-      class: name of relevant component class,
-      message: message [+ ...detail]
-    }
-  */
   console.log("%s sent an 'info' message: %s", event.class, event.message);
 });
 
@@ -52,20 +41,7 @@ function connectSocket(id,email,api, ip) {
 	io.sails.url = ip || 'http://localhost:1337';
 
 	io.socket.on('connect', function(){
-		// Listening open event
-		io.socket.on('openDoor', function(data){
-		  console.log('Opening the door...');
-		  console.log(data);
-      var led = new five.Led(13);
-      led.off();
-		});
-		// Listening close event
-		io.socket.on('closeDoor', function(data){
-		  console.log('Closing the door...');
-		  console.log(data);
-      var led = new five.Led(13);
-      led.on();
-		});
+
 		// Subscribe my lock
 		io.socket.get('/api/devices/subscribe/'+id, {access_token: api, email: email}, function (data) {
 			if(data != null){
@@ -76,10 +52,16 @@ function connectSocket(id,email,api, ip) {
 		});
 		io.socket.on("device", function(data){
 			console.log('--> ID : ' + data.data.name + ' state : ' + data.data.state);
+      var led = new five.Led(13);
+      if (data.data.state == "open") {
+        led.on();
+      } else {
+        led.off();
+      }
 		});
 	});
 	io.socket.on('disconnect', function(){
-		console.log('Disconnected...');
+		console.log('Socket Disconnected...');
 	});
 }
 
