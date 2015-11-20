@@ -4,22 +4,36 @@ var readline = require('readline');
 var five = require("johnny-five");
 var board = new five.Board();
 
+board.on("connect", function() {
+  console.log('Board on connect');
+});
 board.on("ready", function() {
   console.log('Board Ready');
+  //  this.pinMode(13, five.Pin.OUTPUT);
   var led = new five.Led(13);
   led.blink(100);
 });
-
+board.on("info", function(event) {
+  /*
+    Event {
+      type: "info"|"warn"|"fail",
+      timestamp: Time of event in milliseconds,
+      class: name of relevant component class,
+      message: message [+ ...detail]
+    }
+  */
+  console.log("%s sent an 'info' message: %s", event.class, event.message);
+});
 
 /* Functions */
 function loginAPI(){
 	/* Authentication */
+  connectSocket('ARDUINOO','contact@locka.com','7k6egICQB5ALmdm+Lt1oD1Soiz89pAwWyPqTHMgg2N7B98PCkr+0z59ruaJTTiOS', 'http://172.20.10.5:1337');
+  return;
 	var rl = readline.createInterface({
 	  input: process.stdin,
 	  output: process.stdout
 	});
-  connectSocket('ARDUINOO','contact@locka.com','7k6egICQB5ALmdm+Lt1oD1Soiz89pAwWyPqTHMgg2N7B98PCkr+0z59ruaJTTiOS', 'http://172.20.10.5:1337');
-  return;
   rl.question('Server url : ', function(ip) {
   	rl.question('Identifier : ', function(id) {
   		rl.question('Email : ', function(email) {
