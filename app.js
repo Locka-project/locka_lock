@@ -16,6 +16,7 @@ board.on("ready", function() {
   var button = new five.Button(12);
   doorLed = new five.Led(13);
   button.on("release", function() {
+    console.log('Door moving...');
     if (!device) { doorLed.toggle(); return; }
     if (device.state == "open") {
       openDoor();
