@@ -3,6 +3,9 @@ var sailsIOClient = require('sails.io.js');
 var readline = require('readline');
 var five = require("johnny-five");
 var board = new five.Board({port: "/dev/ttyATH0"});
+var APIKEY = "";
+var device;
+var doorLed;
 
 board.on("connect", function() {
   console.log('Board on connect');
@@ -10,16 +13,14 @@ board.on("connect", function() {
 board.on("ready", function() {
   console.log('Board Ready');
   var button = new five.Button(2);
-  button.on("hold", function() {
-    console.log( "Button held" );
-  });
-
-  button.on("press", function() {
-    console.log( "Button pressed" );
-  });
-
+  doorLed = new five.Led(13);
   button.on("release", function() {
-    console.log( "Button released" );
+    if (!device) { doorLed.toggle(); }
+    if (device.state == "open") {
+      openDoor();
+    } else {
+      closeDoor();
+    }
   });
 });
 board.on("info", function(event) {
@@ -39,6 +40,7 @@ function loginAPI(){
   	rl.question('Identifier : ', function(id) {
   		rl.question('Email : ', function(email) {
   			rl.question('API Key : ', function(api) {
+          APIKEY = api;
   				rl.close();
   				connectSocket(id,email,api, ip)
   			});
@@ -63,12 +65,12 @@ function connectSocket(id,email,api, ip) {
 			}
 		});
 		io.socket.on("device", function(data){
-			console.log('--> ID : ' + data.data.name + ' state : ' + data.data.state);
-      var led = new five.Led(13);
-      if (data.data.state == "open") {
-        led.on();
+      device = data.data;
+			console.log('--> ID : ' + device.name + ' state : ' + device.state);
+      if (device.state == "open") {
+        doorLed.on();
       } else {
-        led.off();
+        doorLed.off();
       }
 		});
 	});
@@ -79,3 +81,16 @@ function connectSocket(id,email,api, ip) {
 
 /* Main */
 loginAPI();
+
+
+function openDoor() {
+  io.socket.post('/api/devices/'+device.id+'/open', {access_token: APIKEY}, function (data) {
+
+  });
+}
+
+function closeDoor() {
+  io.socket.post('/api/devices/'+device.id+'/close', {access_token: APIKEY}, function (data) {
+
+  });
+}
