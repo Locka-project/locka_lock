@@ -4,8 +4,8 @@ var readline = require('readline');
 var five = require("johnny-five");
 var board = new five.Board();
 
-
 board.on("ready", function() {
+  console.log('Board Ready');
   var led = new five.Led(13);
   led.blink(100);
 });
@@ -23,7 +23,7 @@ function loginAPI(){
   		rl.question('Email : ', function(email) {
   			rl.question('API Key : ', function(api) {
   				rl.close();
-  				connectSocket(id,email,api)
+  				connectSocket(id,email,api, ip)
   			});
   		});
   	});
