@@ -12,10 +12,10 @@ board.on("connect", function() {
 });
 board.on("ready", function() {
   console.log('Board Ready');
-  var button = new five.Button(2);
+  var button = new five.Button(12);
   doorLed = new five.Led(13);
   button.on("release", function() {
-    if (!device) { doorLed.toggle(); }
+    if (!device) { doorLed.toggle(); return; }
     if (device.state == "open") {
       openDoor();
     } else {
