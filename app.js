@@ -89,14 +89,14 @@ loginAPI();
 function openDoor() {
   console.log('device?', device);
   console.log('Sending post to /api/devices/'+device.id+'/open');
-  io.socket.post('/api/devices/'+device.id+'/open', {access_token: APIKEY}, function (data) {
+  io.socket.put('/api/devices/'+device.id+'/open', {access_token: APIKEY}, function (data) {
     console.log(data);
   });
 }
 
 function closeDoor() {
   console.log('Sending post to /api/devices/'+device.id+'/close');
-  io.socket.post('/api/devices/'+device.id+'/close', {access_token: APIKEY}, function (data) {
+  io.socket.put('/api/devices/'+device.id+'/close', {access_token: APIKEY}, function (data) {
     console.log(data);
   });
 }
