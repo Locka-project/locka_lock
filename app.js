@@ -17,7 +17,7 @@ board.on("info", function(event) {
 /* Functions */
 function loginAPI(){
 	/* Authentication */
-  connectSocket('ARDUINOO','contact@locka.com','7k6egICQB5ALmdm+Lt1oD1Soiz89pAwWyPqTHMgg2N7B98PCkr+0z59ruaJTTiOS', 'http://172.20.10.5:1337');
+  connectSocket('ARDUINOO','contact@locka.com','mnNO5fjw+sc9veDKTPVVAj2c+XH75W091bLIE+WpxbYJOeI6VI7Xg/YmnsPZUYCA', 'http://149.12.192.138:1337');
   return;
 	var rl = readline.createInterface({
 	  input: process.stdin,
