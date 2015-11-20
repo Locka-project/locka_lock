@@ -6,6 +6,7 @@ var board = new five.Board({port: "/dev/ttyATH0"});
 var APIKEY = "";
 var device;
 var doorLed;
+var io;
 
 board.on("connect", function() {
   console.log('Board on connect');
@@ -51,7 +52,7 @@ function loginAPI(){
 
 function connectSocket(id,email,api, ip) {
 	/* Connect Socket IO */
-	var io = sailsIOClient(socketIOClient);
+	io = sailsIOClient(socketIOClient);
 	io.sails.url = ip || 'http://localhost:1337';
 
 	io.socket.on('connect', function(){
