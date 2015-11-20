@@ -33,23 +33,33 @@ board.on("info", function(event) {
 /* Functions */
 function loginAPI(){
 	/* Authentication */
-  connectSocket('ARDUINOO','contact@locka.com','mnNO5fjw+sc9veDKTPVVAj2c+XH75W091bLIE+WpxbYJOeI6VI7Xg/YmnsPZUYCA', 'http://149.12.192.138:1337');
-  return;
 	var rl = readline.createInterface({
 	  input: process.stdin,
 	  output: process.stdout
 	});
-  rl.question('Server url : ', function(ip) {
-  	rl.question('Identifier : ', function(id) {
-  		rl.question('Email : ', function(email) {
-  			rl.question('API Key : ', function(api) {
-          APIKEY = api;
-  				rl.close();
-  				connectSocket(id,email,api, ip)
-  			});
-  		});
-  	});
+
+  rl.question('Default conf : (y/n)', function(conf) {
+    if (conf == 'y') {
+      APIKEY = 'mnNO5fjw+sc9veDKTPVVAj2c+XH75W091bLIE+WpxbYJOeI6VI7Xg/YmnsPZUYCA';
+      connectSocket('ARDUINOO','contact@locka.com', APIKEY, 'http://149.12.192.138:1337');
+    } else {
+      rl.question('Server url : (leave empty for default)', function(ip) {
+        if (!ip || ip == '') {
+          ip = 'http://149.12.192.138:1337';
+        }
+      	rl.question('Identifier : ', function(id) {
+      		rl.question('Email : ', function(email) {
+      			rl.question('API Key : ', function(api) {
+              APIKEY = api;
+      				rl.close();
+      				connectSocket(id,email,api, ip)
+      			});
+      		});
+      	});
+      });
+    }
   });
+
 }
 
 function connectSocket(id,email,api, ip) {
