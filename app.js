@@ -88,12 +88,12 @@ loginAPI();
 
 function openDoor() {
   io.socket.post('/api/devices/'+device.id+'/open', {access_token: APIKEY}, function (data) {
-
+    console.log(data);
   });
 }
 
 function closeDoor() {
   io.socket.post('/api/devices/'+device.id+'/close', {access_token: APIKEY}, function (data) {
-
+    console.log(data);
   });
 }
