@@ -18,6 +18,8 @@ function loginAPI(){
 	  input: process.stdin,
 	  output: process.stdout
 	});
+  connectSocket('ARDUINOO','contact@locka.com','7k6egICQB5ALmdm+Lt1oD1Soiz89pAwWyPqTHMgg2N7B98PCkr+0z59ruaJTTiOS', 'http://172.20.10.5:1337');
+  return;
   rl.question('Server url : ', function(ip) {
   	rl.question('Identifier : ', function(id) {
   		rl.question('Email : ', function(email) {
