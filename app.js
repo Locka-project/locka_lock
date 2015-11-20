@@ -9,6 +9,18 @@ board.on("connect", function() {
 });
 board.on("ready", function() {
   console.log('Board Ready');
+  var button = new five.Button(2);
+  button.on("hold", function() {
+    console.log( "Button held" );
+  });
+
+  button.on("press", function() {
+    console.log( "Button pressed" );
+  });
+
+  button.on("release", function() {
+    console.log( "Button released" );
+  });
 });
 board.on("info", function(event) {
   console.log("%s sent an 'info' message: %s", event.class, event.message);
