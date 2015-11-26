@@ -18,6 +18,7 @@ function connectBoard() {
     console.log('Board Ready');
     var button = new five.Button(12);
     doorLed = new five.Led(13);
+    subscribeSocket();
     // button.on("release", function() {
     //   console.log('Door moving...');
     //   doorLed.toggle();
@@ -74,22 +75,7 @@ function connectSocket(id,email,api, ip) {
 	io.socket.on('connect', function(){
 		// Subscribe my lock
     connectBoard();
-		io.socket.get('/api/devices/subscribe/'+id, {access_token: api, email: email}, function (data) {
-			if(data != null){
-				if(data.msg != 'success') {
-					console.log(data);
-				}
-			}
-		});
-		io.socket.on("device", function(data){
-      device = data.data;
-			console.log('--> ID : ' + device.name + ' state : ' + device.state);
-      if (device.state == "open") {
-        doorLed.on();
-      } else {
-        doorLed.off();
-      }
-		});
+
 	});
 	io.socket.on('disconnect', function(){
 		console.log('Socket Disconnected...');
@@ -100,6 +86,24 @@ function connectSocket(id,email,api, ip) {
 loginAPI();
 
 
+function subscribeSocket() {
+  io.socket.get('/api/devices/subscribe/'+id, {access_token: api, email: email}, function (data) {
+    if(data != null){
+      if(data.msg != 'success') {
+        console.log(data);
+      }
+    }
+  });
+  io.socket.on("device", function(data){
+    device = data.data;
+    console.log('--> ID : ' + device.name + ' state : ' + device.state);
+    if (device.state == "open") {
+      doorLed.on();
+    } else {
+      doorLed.off();
+    }
+  });
+}
 function openDoor() {
   console.log('device?', device);
   console.log('Sending post to /api/devices/'+device.id+'/open');
