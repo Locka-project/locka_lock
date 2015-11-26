@@ -15,16 +15,16 @@ board.on("ready", function() {
   console.log('Board Ready');
   var button = new five.Button(12);
   doorLed = new five.Led(13);
-  button.on("release", function() {
-    console.log('Door moving...');
-    doorLed.toggle();
-    if (!device) { return; }
-    if (device.state == "open") {
-      openDoor();
-    } else {
-      closeDoor();
-    }
-  });
+  // button.on("release", function() {
+  //   console.log('Door moving...');
+  //   doorLed.toggle();
+  //   if (!device) { return; }
+  //   if (device.state == "open") {
+  //     openDoor();
+  //   } else {
+  //     closeDoor();
+  //   }
+  // });
 });
 board.on("info", function(event) {
   console.log("%s sent an 'info' message: %s", event.class, event.message);
