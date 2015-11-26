@@ -2,7 +2,7 @@ var socketIOClient = require('socket.io-client');
 var sailsIOClient = require('sails.io.js');
 var readline = require('readline');
 var five = require("johnny-five");
-var board = new five.Board({port: "/dev/ttyATH0"});
+var board;
 var APIKEY = "";
 var device;
 var doorLed;
@@ -68,7 +68,7 @@ function connectSocket(id,email,api, ip) {
 	io.sails.url = ip || 'http://localhost:1337';
 
 	io.socket.on('connect', function(){
-
+    board = new five.Board({port: "/dev/ttyATH0"});
 		// Subscribe my lock
 		io.socket.get('/api/devices/subscribe/'+id, {access_token: api, email: email}, function (data) {
 			if(data != null){
