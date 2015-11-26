@@ -8,27 +8,31 @@ var device;
 var doorLed;
 var io;
 
-board.on("connect", function() {
-  console.log('Board on connect');
-});
-board.on("ready", function() {
-  console.log('Board Ready');
-  var button = new five.Button(12);
-  doorLed = new five.Led(13);
-  // button.on("release", function() {
-  //   console.log('Door moving...');
-  //   doorLed.toggle();
-  //   if (!device) { return; }
-  //   if (device.state == "open") {
-  //     openDoor();
-  //   } else {
-  //     closeDoor();
-  //   }
-  // });
-});
-board.on("info", function(event) {
-  console.log("%s sent an 'info' message: %s", event.class, event.message);
-});
+
+function connectBoard() {
+  board = new five.Board({port: "/dev/ttyATH0"});
+  board.on("connect", function() {
+    console.log('Board on connect');
+  });
+  board.on("ready", function() {
+    console.log('Board Ready');
+    var button = new five.Button(12);
+    doorLed = new five.Led(13);
+    // button.on("release", function() {
+    //   console.log('Door moving...');
+    //   doorLed.toggle();
+    //   if (!device) { return; }
+    //   if (device.state == "open") {
+    //     openDoor();
+    //   } else {
+    //     closeDoor();
+    //   }
+    // });
+  });
+  board.on("info", function(event) {
+    console.log("%s sent an 'info' message: %s", event.class, event.message);
+  });
+}
 
 /* Functions */
 function loginAPI(){
@@ -68,8 +72,8 @@ function connectSocket(id,email,api, ip) {
 	io.sails.url = ip || 'http://localhost:1337';
 
 	io.socket.on('connect', function(){
-    board = new five.Board({port: "/dev/ttyATH0"});
 		// Subscribe my lock
+    connectBoard();
 		io.socket.get('/api/devices/subscribe/'+id, {access_token: api, email: email}, function (data) {
 			if(data != null){
 				if(data.msg != 'success') {
