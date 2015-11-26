@@ -2,38 +2,33 @@ var socketIOClient = require('socket.io-client');
 var sailsIOClient = require('sails.io.js');
 var readline = require('readline');
 var five = require("johnny-five");
-var board;
+var board = new five.Board({port: "/dev/ttyATH0"});
 var APIKEY = "";
 var device;
 var doorLed;
 var io;
 
-
-function connectBoard() {
-  board = new five.Board({port: "/dev/ttyATH0"});
-  board.on("connect", function() {
-    console.log('Board on connect');
-  });
-  board.on("ready", function() {
-    console.log('Board Ready');
-    var button = new five.Button(12);
-    doorLed = new five.Led(13);
-    subscribeSocket();
-    // button.on("release", function() {
-    //   console.log('Door moving...');
-    //   doorLed.toggle();
-    //   if (!device) { return; }
-    //   if (device.state == "open") {
-    //     openDoor();
-    //   } else {
-    //     closeDoor();
-    //   }
-    // });
-  });
-  board.on("info", function(event) {
-    console.log("%s sent an 'info' message: %s", event.class, event.message);
-  });
-}
+board.on("connect", function() {
+  console.log('Board on connect');
+});
+board.on("ready", function() {
+  console.log('Board Ready');
+  var button = new five.Button(12);
+  doorLed = new five.Led(13);
+  // button.on("release", function() {
+  //   console.log('Door moving...');
+  //   doorLed.toggle();
+  //   if (!device) { return; }
+  //   if (device.state == "open") {
+  //     openDoor();
+  //   } else {
+  //     closeDoor();
+  //   }
+  // });
+});
+board.on("info", function(event) {
+  console.log("%s sent an 'info' message: %s", event.class, event.message);
+});
 
 /* Functions */
 function loginAPI(){
@@ -73,9 +68,24 @@ function connectSocket(id,email,api, ip) {
 	io.sails.url = ip || 'http://localhost:1337';
 
 	io.socket.on('connect', function(){
-		// Subscribe my lock
-    connectBoard();
 
+		// Subscribe my lock
+		io.socket.get('/api/devices/subscribe/'+id, {access_token: api, email: email}, function (data) {
+			if(data != null){
+				if(data.msg != 'success') {
+					console.log(data);
+				}
+			}
+		});
+		io.socket.on("device", function(data){
+      device = data.data;
+			console.log('--> ID : ' + device.name + ' state : ' + device.state);
+      if (device.state == "open") {
+        doorLed.on();
+      } else {
+        doorLed.off();
+      }
+		});
 	});
 	io.socket.on('disconnect', function(){
 		console.log('Socket Disconnected...');
@@ -86,24 +96,6 @@ function connectSocket(id,email,api, ip) {
 loginAPI();
 
 
-function subscribeSocket() {
-  io.socket.get('/api/devices/subscribe/'+id, {access_token: api, email: email}, function (data) {
-    if(data != null){
-      if(data.msg != 'success') {
-        console.log(data);
-      }
-    }
-  });
-  io.socket.on("device", function(data){
-    device = data.data;
-    console.log('--> ID : ' + device.name + ' state : ' + device.state);
-    if (device.state == "open") {
-      doorLed.on();
-    } else {
-      doorLed.off();
-    }
-  });
-}
 function openDoor() {
   console.log('device?', device);
   console.log('Sending post to /api/devices/'+device.id+'/open');
